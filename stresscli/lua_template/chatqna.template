@@ -1,0 +1,40 @@
+local json = require('cjson')
+
+local function getQText(jsonFile)
+    local file = io.open(jsonFile, "r")
+    if not file then
+        error("Could not open file " .. jsonFile)
+    end
+    local jContent = file:read("*a")
+    file:close()
+    local jdata = json.decode(jContent)
+    math.randomseed(os.clock())
+    qNum = math.random(#jdata)
+--    print("qustion number:",qNum, jdata[qNum]['qText'])
+    return jdata[qNum]['qText']
+--    for index, data in ipairs(jdata) do
+--        print(index)
+--    
+--        for key, value in pairs(data) do
+--            if key == 'qText' then 
+--                print('\t', key, value)
+--            end
+--        end
+--    end
+
+end
+
+request = function()
+    local qFile = "${DATASET_PATH}"
+    local mQuest = getQText(qFile)
+    bodyFmt="{\"messages\": \"%s\" }"
+    local body   = bodyFmt:format(mQuest)
+    -- wrk.body   = "{\"messages\": \"What is the revenue of Nike in 2023?\" }"
+    
+    local method = "POST"
+    local path ="/v1/chatqna"
+    local headers = {}
+    headers["Content-Type"] = "Content-Type: application/json"
+    return wrk.format(method, path, headers, body)
+end
+

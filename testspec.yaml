@@ -1,0 +1,4 @@
+workloadspec:
+  mycluster-control-plane:
+    coredns:
+      replica: 2
